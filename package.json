@@ -1,5 +1,5 @@
 {
-  "name": "react-simple-boilerplate",
+  "name": "chattyApp",
   "version": "1.0.0",
   "description": "Simple and lightweight Boilerplate for ReactJS projects",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/noahlotzer/react-simple-boilerplate.git"
+    "url": "https://github.com/Bbooth4/chattyApp"
   },
   "keywords": [
     "react",
@@ -22,9 +22,9 @@
   "author": "Noah-Jerome Lotzer <n.lotzer@neusta.de>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/noahlotzer/react-simple-boilerplate/issues"
+    "url": "https://github.com/Bbooth4/chattyApp"
   },
-  "homepage": "https://github.com/noahlotzer/react-simple-boilerplate",
+  "homepage": "https://github.com/Bbooth4/chattyApp",
   "engines": {
     "node": ">=6.0.0"
   },
@@ -42,9 +42,10 @@
     "sockjs-client": "^1.1.1",
     "style-loader": "0.13.1",
     "webpack": "1.13.1",
-    "webpack-dev-server": "1.14.1"
+    "webpack-dev-server": "1.14.0"
   },
   "dependencies": {
+    "axios": "^0.15.3",
     "react": "15.2.1",
     "react-dom": "15.2.1"
   }
