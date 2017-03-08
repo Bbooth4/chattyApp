@@ -35,9 +35,10 @@ wss.on('connection', (ws) => {
   const clientId = uuid();
   // broadcast to everyone else 
   ws.on('message', incomingMessage = (message) => {
-    // console.log(message)
+    console.log(message)
     wss.clients.forEach(function each(client) {
       let parsedMessage = JSON.parse(message); 
+      console.log('reached the pasrsedMessage before the switch')
 
       switch (parsedMessage.type) {
         case 'post-new-message':

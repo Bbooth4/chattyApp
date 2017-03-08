@@ -14,10 +14,23 @@ class App extends Component {
     // sets the default state before anything happens
   }
 
-  handleSubmit = (event) => {
+  handleSubmitUser = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault(); 
+      let newUser = {
+        type: 'post-new-user',
+        username: event.target.value
+      };
+      // let newMessageArr = this.state.messages.concat(newMessage) 
+      this.socket.send(JSON.stringify(newUser)); 
+    }
+  }
+
+  handleSubmitContent = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault(); 
       let newMessage = {
+        type: 'post-new-message',
         username: this.state.currentUser.name,
         content: event.target.value
       };
@@ -39,15 +52,25 @@ class App extends Component {
       console.log(event.data)
       console.log('it reached here')
       let parsedMessage = JSON.parse(event.data);
-      this.setState({ messages: this.state.messages.concat(parsedMessage)});
+      
+      switch (parsedMessage.type) {
+        case 'post-new-message':
+          this.setState({ 
+            messages: this.state.messages.concat(parsedMessage)
+          });
+          break;
+        case 'post-new-user':
+          this.setState({ 
+            currentUser: this.state.currentUser.concat(parsedMessage)
+          });
+          break;
+        default: 
+          console.error('Failed to send back');
+      }
       console.log(this.state)
     };
     
-  }
-
-  socketSendReceive = () => {
-    
-  }
+  } 
 
   // gives you a say about when the components will update (if you do not want it to update all the time, then set it to only do so after a certain criteria has been satisfied)
   componentWillUpdate(nextProps, nextState){
