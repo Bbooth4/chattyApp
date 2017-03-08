@@ -36,17 +36,30 @@ wss.on('connection', (ws) => {
   // broadcast to everyone else 
   ws.on('message', incomingMessage = (message) => {
     // console.log(message)
-     wss.clients.forEach(function each(client) {
-        let parsedMessage = JSON.parse(message); 
-        let id = clientId; 
-        let finalMessage = {
-          id: id, 
-          username: parsedMessage.username, 
-          content: parsedMessage.content
-        }
-        client.send(JSON.stringify(finalMessage));
+    wss.clients.forEach(function each(client) {
+      let parsedMessage = JSON.parse(message); 
+
+      switch (parsedMessage.type) {
+        case 'post-new-message':
+          let id = clientId; 
+          let fullMessage = {
+            id: id, 
+            username: parsedMessage.username, 
+            content: parsedMessage.content
+          }
+          client.send(JSON.stringify(fullMessage));
+          break; 
+        case 'post-new-user':
+          let newUsername = {
+            currentUser: parsedMessage
+          }
+          client.send(JSON.stringify(newUsername));
+          break; 
+        default:
+          console.error('Failed to send back');
+       }
     })
-  })
+  });
 
   ws.on('close', () => console.log('Client disconnected'));
 });
