@@ -22,7 +22,7 @@ class App extends Component {
         content: event.target.value
       };
       // let newMessageArr = this.state.messages.concat(newMessage) 
-      this.socket.send(JSON.stringify(newMessage));
+      this.socket.send(JSON.stringify(newMessage)); 
     }
   }
 
@@ -33,12 +33,12 @@ class App extends Component {
   // delcaring of these built in function, they will run regardless of what I do, this just gives me the tools to overrite them 
 
   componentDidMount() {
-    console.log('here')
+    console.log('reached didMount');
     this.socket = new WebSocket("ws://localhost:5000"); 
     this.socket.onmessage = (event) => {
-      console.log(concat(event.data))
+      console.log(event.data)
       console.log('it reached here')
-      this.setState(this.state.message.concat(event.data));
+      this.setState({ messages: this.state.messages.concat(event.data)});
     };
     
   }
