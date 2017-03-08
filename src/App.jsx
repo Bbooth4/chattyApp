@@ -38,7 +38,9 @@ class App extends Component {
     this.socket.onmessage = (event) => {
       console.log(event.data)
       console.log('it reached here')
-      this.setState({ messages: this.state.messages.concat(event.data)});
+      let parsedMessage = JSON.parse(event.data);
+      this.setState({ messages: this.state.messages.concat(parsedMessage)});
+      console.log(this.state)
     };
     
   }
