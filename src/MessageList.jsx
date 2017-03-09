@@ -13,7 +13,7 @@ class MessageList extends Component {
           })
         }
         <div className="message system">
-          {this.props.notif.notification}
+          {this.props.notification.notification}
         </div>
       </main>
     );

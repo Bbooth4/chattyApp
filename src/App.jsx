@@ -71,10 +71,11 @@ class App extends Component {
           console.log('newUser', newUser)
           newUser.name = parsedMessage.name;
           newUser.id = parsedMessage.id;
+          console.log(parsedMessage)
           this.setState({
             id: newUser.id,
             name: newUser.name,
-            notification: parsedMessage.notification 
+            notification: parsedMessage
           })
           break;
 
@@ -135,7 +136,7 @@ class App extends Component {
         </nav>
         <MessageList 
           messages={this.state.messages}
-          notif={this.state.notification}
+          notification={this.state.notification}
         />
         <ChatBar 
           currentUser={this.state.currentUser}
