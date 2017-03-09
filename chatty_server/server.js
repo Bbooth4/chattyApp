@@ -62,15 +62,25 @@ wss.on('connection', (client) => {
 
         case 'post-notification':
           console.log('entered post-notification');
-          let notification = {
-            type: 'incoming-notification',
-            id: id, 
-            name: parsedMessage.name,
-            notification: parsedMessage.notification
-          }
-          client.send(JSON.stringify(notification));
-          break; 
-
+          if (parsedMessage.name === '') {
+            let notification = {
+              type: 'incoming-notification-empty',
+              id: id, 
+              name: 'Anonymous',
+              notification: parsedMessage.notification
+            }
+            client.send(JSON.stringify(notification));
+            break; 
+          } else {
+            let notification = {
+              type: 'incoming-notification',
+              id: id, 
+              name: parsedMessage.name,
+              notification: parsedMessage.notification
+            }
+            client.send(JSON.stringify(notification));
+            break; 
+        }
         default:
           console.error('Failed to send back');
        }

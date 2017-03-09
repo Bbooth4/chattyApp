@@ -6,6 +6,7 @@ class ChatBar extends Component {
     return (
       <footer className="chatbar">
         <input 
+          onChange={this.props.checkIfEmpty}
           onKeyUp={this.props.handleNotifications}
           defaultValue={this.props.currentUser.name}
           className="chatbar-username" 

@@ -17,6 +17,12 @@ class App extends Component {
     // sets the default state before anything happens
   }
 
+  checkIfEmpty = (event) => {
+    if (event.target.value === '') {
+      this.state.currentUser.name = 'Anonymous';
+    }
+  }
+
   handleSubmitContent = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault(); 
@@ -30,7 +36,7 @@ class App extends Component {
   }
 
   handleNotifications = (event) => {
-    console.log(this.state.currentUser.name, event.target.value)
+    console.log(this.state.currentUser.name, event.target.value);
     if (event.key === 'Enter') {
       event.preventDefault(); 
       let notification = {
@@ -71,10 +77,24 @@ class App extends Component {
           console.log('newUser', newUser)
           newUser.name = parsedMessage.name;
           newUser.id = parsedMessage.id;
-          console.log(parsedMessage)
+          console.log(parsedMessage);
           this.setState({
             id: newUser.id,
             name: newUser.name,
+            notification: parsedMessage
+          })
+          break;
+
+        case 'incoming-notification-empty':
+          console.log('inside incoming-notification-empty',parsedMessage);
+          let newU = this.state.currentUser;
+          console.log('newUser', newUser)
+          newU.name = parsedMessage.name;
+          newU.id = parsedMessage.id;
+          console.log(parsedMessage);
+          this.setState({
+            id: newU.id,
+            name: 'Anonymous',
             notification: parsedMessage
           })
           break;
@@ -139,6 +159,7 @@ class App extends Component {
           notification={this.state.notification}
         />
         <ChatBar 
+          checkIfEmpty={this.checkIfEmpty}
           currentUser={this.state.currentUser}
           messages={this.state.messages}
           handleNotifications={this.handleNotifications}
