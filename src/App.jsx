@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
-import Notifications from './Notifications.jsx';
+// import Notifications from './Notifications.jsx';
 
 class App extends Component {
 
@@ -10,7 +10,9 @@ class App extends Component {
     super(props);
     this.state = {
       currentUser: {name: 'Bob'},
-      messages: []
+      messages: [],
+      notification: {},
+      onlineUsers: 0
     };
     // sets the default state before anything happens
   }
@@ -38,10 +40,6 @@ class App extends Component {
       }
       this.socket.send(JSON.stringify(notification));
     }
-    // let newUser = {
-     
-    // }
-    // this.socket.send(JSON.stringify(newUser)); 
   }
 
   // not all of these need to be used but this is the general skeleton for the whole process
@@ -53,11 +51,12 @@ class App extends Component {
   componentDidMount() {
     console.log('reached didMount');
     this.socket = new WebSocket("ws://localhost:5000"); 
+
     this.socket.onmessage = (event) => {
-      console.log('received object', event.data)
+      console.log('received object', event.data);
       console.log('it did mount')
       let parsedMessage = JSON.parse(event.data);
-      console.log('parsed message', parsedMessage)
+      console.log('parsed message', parsedMessage);
       
       switch (parsedMessage.type) {
         case 'post-new-message':
@@ -78,13 +77,32 @@ class App extends Component {
             notification: parsedMessage.notification 
           })
           break;
+
+        case 'connected':
+          let newOnlineUser = this.state.onlineUsers;
+          let parsedTotalOnlineUsers = JSON.parse(event.data);
+          newOnlineUser = parsedTotalOnlineUsers.onlineUsers;
+          console.log(parsedTotalOnlineUsers);
+          return this.setState({
+            onlineUsers: newOnlineUser
+          })
+          break;
+
+        // case 'disconnected':
+        //   let newOfflineUser = this.state.onlineUsers;
+        //   let totalOnlineUsers = JSON.parse(event.data);
+        //   newOfflineUser = totalOnlineUsers.onlineUsers;
+        //   console.log(totalOnlineUsers);
+        //   this.setState({
+        //     onlineUsers: newOfflineUser
+        //   })
+        //   break; 
         default: 
           console.error('Failed to send back'); 
       }
       console.log(this.state)
     };
-    
-  } 
+  }; 
 
   // gives you a say about when the components will update (if you do not want it to update all the time, then set it to only do so after a certain criteria has been satisfied)
   componentWillUpdate(nextProps, nextState){
@@ -111,6 +129,9 @@ class App extends Component {
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
+          <div>
+            {`${this.state.onlineUsers} users online`}
+          </div>
         </nav>
         <MessageList 
           messages={this.state.messages}

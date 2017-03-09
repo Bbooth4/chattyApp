@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Message from './Message.jsx';
+// import Notifications from './Notifications.jsx';
 
 class MessageList extends Component {
 
@@ -12,12 +13,12 @@ class MessageList extends Component {
           })
         }
         <div className="message system">
-          {this.props.notif}
-          {/*<Notifications notifs={this.props.notif} />*/}
+          {this.props.notif.notification}
         </div>
       </main>
     );
   }
 }
+          // <Notifications notifs={this.props.notif} />
 
 export default MessageList;

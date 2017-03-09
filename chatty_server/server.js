@@ -21,6 +21,8 @@ const wss = new SocketServer({ server });
 // the ws parameter in the callback.
 
 // Broadcast to all.
+// let totalOnlineUsers = 0; 
+
 wss.broadcast = function broadcast(data) {
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
@@ -29,12 +31,17 @@ wss.broadcast = function broadcast(data) {
   });
 };
 
-wss.on('connection', (ws) => {
+wss.on('connection', (client) => {
   console.log('Client connected');
+  let loggedInUsers = {
+    type: 'connected',
+    onlineUsers: wss.clients.size
+  }
+  client.send(JSON.stringify(loggedInUsers));
 
   const clientId = uuid();
   // broadcast to everyone else 
-  ws.on('message', incomingMessage = (message) => {
+  client.on('message', incomingMessage = (message) => {
     console.log(message)
     wss.clients.forEach(function each(client) {
       let parsedMessage = JSON.parse(message); 
@@ -70,5 +77,13 @@ wss.on('connection', (ws) => {
     })
   });
 
-  ws.on('close', () => console.log('Client disconnected'));
+  client.on('close', (message) => {
+    // totalOnlineUsers--;
+    console.log('Client disconnected');
+    // let loggedInUsers = {
+    //   type: 'disconnected',
+    //   onlineUsers: totalOnlineUsers
+    // }
+    // client.send(JSON.stringify(loggedInUsers));
+  });
 });
