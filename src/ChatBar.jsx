@@ -2,12 +2,11 @@ import React, {Component} from 'react';
 
 class ChatBar extends Component {
 
-          /*onKeyUp={this.props.handleSubmitUser}*/
   render() {
     return (
-      <footer className="chatbar" >
+      <footer className="chatbar">
         <input 
-          onKeyUp={this.props.handleSubmitUser}
+          onKeyUp={this.props.handleNotifications}
           defaultValue={this.props.currentUser.name}
           className="chatbar-username" 
           placeholder="Your Name (Optional)" 

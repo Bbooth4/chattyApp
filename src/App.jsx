@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
+import Notifications from './Notifications.jsx';
 
 class App extends Component {
 
@@ -8,22 +9,10 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: {name: "Bob"}, 
+      currentUser: {name: 'Bob'},
       messages: []
     };
     // sets the default state before anything happens
-  }
-
-  handleSubmitUser = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault(); 
-      let newUser = {
-        type: 'post-new-user',
-        username: event.target.value
-      };
-      // let newMessageArr = this.state.messages.concat(newMessage) 
-      this.socket.send(JSON.stringify(newUser)); 
-    }
   }
 
   handleSubmitContent = (event) => {
@@ -34,9 +23,25 @@ class App extends Component {
         username: this.state.currentUser.name,
         content: event.target.value
       };
-      // let newMessageArr = this.state.messages.concat(newMessage) 
       this.socket.send(JSON.stringify(newMessage)); 
     }
+  }
+
+  handleNotifications = (event) => {
+    console.log(this.state.currentUser.name, event.target.value)
+    if (event.key === 'Enter') {
+      event.preventDefault(); 
+      let notification = {
+        type: 'post-notification',
+        notification: `${this.state.currentUser.name} changed their name to ${event.target.value}`,
+        name: event.target.value
+      }
+      this.socket.send(JSON.stringify(notification));
+    }
+    // let newUser = {
+     
+    // }
+    // this.socket.send(JSON.stringify(newUser)); 
   }
 
   // not all of these need to be used but this is the general skeleton for the whole process
@@ -49,9 +54,10 @@ class App extends Component {
     console.log('reached didMount');
     this.socket = new WebSocket("ws://localhost:5000"); 
     this.socket.onmessage = (event) => {
-      console.log(event.data)
-      console.log('it reached here')
+      console.log('received object', event.data)
+      console.log('it did mount')
       let parsedMessage = JSON.parse(event.data);
+      console.log('parsed message', parsedMessage)
       
       switch (parsedMessage.type) {
         case 'post-new-message':
@@ -59,13 +65,21 @@ class App extends Component {
             messages: this.state.messages.concat(parsedMessage)
           });
           break;
-        case 'post-new-user':
-          this.setState({ 
-            currentUser: this.state.currentUser.concat(parsedMessage)
-          });
+
+        case 'incoming-notification':
+          console.log('inside incoming-notification',parsedMessage);
+          let newUser = this.state.currentUser;
+          console.log('newUser', newUser)
+          newUser.name = parsedMessage.name;
+          newUser.id = parsedMessage.id;
+          this.setState({
+            id: newUser.id,
+            name: newUser.name,
+            notification: parsedMessage.notification 
+          })
           break;
         default: 
-          console.error('Failed to send back');
+          console.error('Failed to send back'); 
       }
       console.log(this.state)
     };
@@ -100,11 +114,13 @@ class App extends Component {
         </nav>
         <MessageList 
           messages={this.state.messages}
+          notif={this.state.notification}
         />
         <ChatBar 
           currentUser={this.state.currentUser}
           messages={this.state.messages}
-          handleSubmit={this.handleSubmit}
+          handleNotifications={this.handleNotifications}
+          handleSubmitContent={this.handleSubmitContent}
         />
       </div>
     );

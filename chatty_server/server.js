@@ -38,24 +38,32 @@ wss.on('connection', (ws) => {
     console.log(message)
     wss.clients.forEach(function each(client) {
       let parsedMessage = JSON.parse(message); 
-      console.log('reached the pasrsedMessage before the switch')
+      console.log('reached the parsedMessage before the switch')
+      let id = clientId; 
 
       switch (parsedMessage.type) {
         case 'post-new-message':
-          let id = clientId; 
+          console.log('entered post-new-message');
           let fullMessage = {
+            type: 'post-new-message',
             id: id, 
             username: parsedMessage.username, 
             content: parsedMessage.content
           }
           client.send(JSON.stringify(fullMessage));
           break; 
-        case 'post-new-user':
-          let newUsername = {
-            currentUser: parsedMessage
+
+        case 'post-notification':
+          console.log('entered post-notification');
+          let notification = {
+            type: 'incoming-notification',
+            id: id, 
+            name: parsedMessage.name,
+            notification: parsedMessage.notification
           }
-          client.send(JSON.stringify(newUsername));
+          client.send(JSON.stringify(notification));
           break; 
+
         default:
           console.error('Failed to send back');
        }
