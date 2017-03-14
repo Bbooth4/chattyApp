@@ -93,8 +93,17 @@ wss.on('connection', (client) => {
   });
 
   client.on('close', (message) => {
-    console.log('Client disconnected');
-  });
+    wss.clients.forEach(function each(client) {
+      if (client.readyState === client.OPEN) {
+        console.log('Client disconnected');
+        let loggedInUsers = {
+          type: 'connected',
+          onlineUsers: wss.clients.size
+        }
+        client.send(JSON.stringify(loggedInUsers));
+      }
+    });
+  }); 
   
 });
 
