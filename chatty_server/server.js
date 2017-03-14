@@ -29,15 +29,20 @@ wss.broadcast = function broadcast(data) {
       client.send(data);
     }
   });
-};
+}
+
 
 wss.on('connection', (client) => {
-  console.log('Client connected');
-  let loggedInUsers = {
-    type: 'connected',
-    onlineUsers: wss.clients.size
-  }
-  client.send(JSON.stringify(loggedInUsers));
+  wss.clients.forEach(function each(client) {
+    if (client.readyState === client.OPEN) {
+      console.log('Client connected');
+      let loggedInUsers = {
+        type: 'connected',
+        onlineUsers: wss.clients.size
+      }
+    client.send(JSON.stringify(loggedInUsers));
+    }
+  });
 
   const clientId = uuid();
   // broadcast to everyone else 
@@ -83,17 +88,14 @@ wss.on('connection', (client) => {
         }
         default:
           console.error('Failed to send back');
-       }
+      }
     })
   });
 
   client.on('close', (message) => {
-    // totalOnlineUsers--;
     console.log('Client disconnected');
-    // let loggedInUsers = {
-    //   type: 'disconnected',
-    //   onlineUsers: totalOnlineUsers
-    // }
-    // client.send(JSON.stringify(loggedInUsers));
   });
+  
 });
+
+
