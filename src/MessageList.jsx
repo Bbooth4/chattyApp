@@ -4,7 +4,7 @@ import Message from './Message.jsx';
 
 class MessageList extends Component {
 
-  render() { 
+  render() {
     return (
       <main className="messages">
          {

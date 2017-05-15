@@ -5,7 +5,7 @@ import MessageList from './MessageList.jsx';
 
 class App extends Component {
 
-  // this only sets things, it is static 
+  // this only sets things, it is static
   constructor(props) {
     super(props);
     this.state = {
@@ -25,20 +25,22 @@ class App extends Component {
 
   handleSubmitContent = (event) => {
     if (event.key === 'Enter') {
-      event.preventDefault(); 
+      event.preventDefault();
       let newMessage = {
         type: 'post-new-message',
         username: this.state.currentUser.name,
         content: event.target.value
       };
-      this.socket.send(JSON.stringify(newMessage)); 
+      this.socket.send(JSON.stringify(newMessage));
     }
   }
 
   handleNotifications = (event) => {
     console.log(this.state.currentUser.name, event.target.value);
+    let colours = ['#4082ed', '#1ecc47', '#d8240d', '#09e2d4'];
+    // add a colour with a random function or find the random colour package online
     if (event.key === 'Enter') {
-      event.preventDefault(); 
+      event.preventDefault();
       let notification = {
         type: 'post-notification',
         notification: `${this.state.currentUser.name} changed their name to ${event.target.value}`,
@@ -50,23 +52,23 @@ class App extends Component {
 
   // not all of these need to be used but this is the general skeleton for the whole process
   componentWillMount(){
-    // might be good for fetching information before everything has loaded 
+    // might be good for fetching information before everything has loaded
   }
-  // delcaring of these built in function, they will run regardless of what I do, this just gives me the tools to overrite them 
+  // delcaring of these built in function, they will run regardless of what I do, this just gives me the tools to overrite them
 
   componentDidMount() {
     console.log('reached didMount');
-    this.socket = new WebSocket("ws://localhost:5000"); 
+    this.socket = new WebSocket("ws://localhost:5000");
 
     this.socket.onmessage = (event) => {
       console.log('received object', event.data);
       console.log('it did mount')
       let parsedMessage = JSON.parse(event.data);
       console.log('parsed message', parsedMessage);
-      
+
       switch (parsedMessage.type) {
         case 'post-new-message':
-          this.setState({ 
+          this.setState({
             messages: this.state.messages.concat(parsedMessage)
           });
           break;
@@ -109,21 +111,12 @@ class App extends Component {
           })
           break;
 
-        // case 'disconnected':
-        //   let newOfflineUser = this.state.onlineUsers;
-        //   let totalOnlineUsers = JSON.parse(event.data);
-        //   newOfflineUser = totalOnlineUsers.onlineUsers;
-        //   console.log(totalOnlineUsers);
-        //   this.setState({
-        //     onlineUsers: newOfflineUser
-        //   })
-        //   break; 
-        default: 
-          console.error('Failed to send back'); 
+        default:
+          console.error('Failed to send back');
       }
       console.log(this.state)
     };
-  }; 
+  };
 
   // gives you a say about when the components will update (if you do not want it to update all the time, then set it to only do so after a certain criteria has been satisfied)
   componentWillUpdate(nextProps, nextState){
@@ -141,7 +134,7 @@ class App extends Component {
   }
 
   componentWillUnmount(){
-    // the component is about to be deleted 
+    // the component is about to be deleted
     // console.log('componentWillUnmount');
   }
 
@@ -154,11 +147,11 @@ class App extends Component {
             {`${this.state.onlineUsers} users online`}
           </div>
         </nav>
-        <MessageList 
+        <MessageList
           messages={this.state.messages}
           notification={this.state.notification}
         />
-        <ChatBar 
+        <ChatBar
           checkIfEmpty={this.checkIfEmpty}
           currentUser={this.state.currentUser}
           messages={this.state.messages}

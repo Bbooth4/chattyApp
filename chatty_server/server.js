@@ -31,7 +31,6 @@ wss.broadcast = function broadcast(data) {
   });
 }
 
-
 wss.on('connection', (client) => {
   wss.clients.forEach(function each(client) {
     if (client.readyState === client.OPEN) {
